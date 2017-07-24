@@ -8,7 +8,7 @@
 import * as path from 'path'
 import * as shell from 'shelljs'
 import * as chalk from 'chalk'
-import * as fs from 'fs'
+import * as fse from 'fs-extra'
 import * as glob from 'glob'
 import * as core from '@echelon-solutions/s4-core/dist'
 import * as provider from '@echelon-solutions/s4-core/dist/provider/aws'
@@ -37,7 +37,7 @@ export class Commands {
       if (args && args.options && args.options.name && args.options.name.length > 0) {
         console.log('Creating project directory [name=%s] ...', args.options.name)
         let directory = path.resolve(args.options.name)
-        fs.mkdirSync(directory)
+        fse.mkdirSync(directory)
         console.log('Project directory created [name=%s].', args.options.name)
         return Promise.resolve(directory)
       }
@@ -45,12 +45,9 @@ export class Commands {
       return Promise.resolve(path.resolve('.'))
     })
     .then(function (directory: string): Promise<void> {
-      console.log('Creating the project sub-directories ...')
-      let folders: Array<string> = [ 'schemas', 'scenarios', 'specifications', 'services' ]
-      for (let folder of folders) {
-        fs.mkdirSync(path.resolve(directory + '/' + folder))
-      }
-      console.log('Project sub-directories created.')
+      console.log('Adding example starter project files ...')
+      fse.copy(path.join(__dirname, './example/'), directory)
+      console.log('Starter project files added.')
       return Promise.resolve()
     })
     .then(function () {
@@ -74,11 +71,11 @@ export class Commands {
       let resources: Array<core.Resource> = []
       for (let file of schemaFiles) {
         console.log('Adding %s as a deployable schema resource.', file)
-        resources.push(new core.Resource(path.basename(file), core.ResourceType.schemas, fs.readFileSync(file, 'utf8'), core.ContentType.JsonSchemaVersion4))
+        resources.push(new core.Resource(path.basename(file), core.ResourceType.schemas, fse.readFileSync(file, 'utf8'), core.ContentType.JsonSchemaVersion4))
       }
       for (let file of specificationFiles) {
         console.log('Adding %s as a deployable specification resource.', file)
-        resources.push(new core.Resource(path.basename(file), core.ResourceType.specifications, fs.readFileSync(file, 'utf8'), core.ContentType.SwaggerVersion2))
+        resources.push(new core.Resource(path.basename(file), core.ResourceType.specifications, fse.readFileSync(file, 'utf8'), core.ContentType.SwaggerVersion2))
       }
       let component = new core.Component('first-time', resources)
       return provider
