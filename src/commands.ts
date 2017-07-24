@@ -12,6 +12,7 @@ import * as fs from 'fs'
 import * as glob from 'glob'
 import * as core from '@echelon-solutions/s4-core/dist'
 import * as provider from '@echelon-solutions/s4-core/dist/provider/aws'
+import open = require('open')
 
 export interface Options {
   name?: string
@@ -93,6 +94,24 @@ export class Commands {
     .catch(function (error) {
       console.error(self.color.red(error.message))
       console.error(self.color.red('ERROR | Unable to deploy the project.'))
+      return
+    })
+  }
+  docs (): Promise<void> {
+    let self = this
+    console.log('Opening the s4 documentation in your browser ...')
+    return Promise
+    .resolve()
+    .then(function () {
+      open('https://github.com/echelon-solutions/s4/blob/master/README.md')
+    })
+    .then(function () {
+      console.log(self.color.green('SUCCESS | Documentation opened.'))
+      return
+    })
+    .catch(function (error) {
+      console.error(self.color.red(error.message))
+      console.error(self.color.red('ERROR | Unable to open the documentation.'))
       return
     })
   }

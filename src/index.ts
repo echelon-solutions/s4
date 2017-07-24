@@ -18,5 +18,11 @@ vorpal
 })
 
 vorpal
+.command('docs', 'Opens the s4 docs, served locally.')
+.action(function(args: any) {
+  return commands.docs()
+})
+
+vorpal
 .delimiter('s4 | ')
 .show()
