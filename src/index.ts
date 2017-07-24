@@ -5,14 +5,14 @@ let vorpal = require('vorpal')()
 let commands = new Commands()
 
 vorpal
-.command('init', 'Create a new s4 project.')
-.action(function(args: any, cb: Function) {
-  return commands.deploy()
+.command('init', 'Creates a new s4 project.')
+.action(function(args: any) {
+  return commands.init(args)
 })
 
 vorpal
-.command('deploy', 'Deploy the s4 project.')
-.action(function(args: any, cb: Function) {
+.command('deploy', 'Deploys the s4 project.')
+.action(function(args: any) {
   return commands.deploy()
 })
 
